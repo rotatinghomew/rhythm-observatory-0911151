@@ -1,0 +1,8 @@
+[project]
+name = "rhythm-observatory"
+version = "0.1.0"
+description = "媒体计数器原始时间序列和自然日用量概览"
+requires-python = ">=3.11,<3.12"
+
+[tool.unittest]
+start-directory = "tests"
