@@ -8,7 +8,7 @@ rhythm-observatory 是 Python 业务分析应用，目前提供原始资料核�
 
 ## 环境和依赖
 
-使用 Python 3.11.14；`requirements.lock` 固定数值计算和模型分析的完整依赖版本。应用运行、测试及资料均在本地，不请求外部 API。Docker 基础镜像固定内容摘要，构建时预装依赖，正式运行不安装或下载资料。
+兼容 Python 3.11.x，具体范围见 `pyproject.toml`；`.python-version` 固定受支持的次版本，不限定补丁版本。独立 Docker 镜像使用固定摘要的 Python 3.11.14，生产验证容器使用 Python 3.11.2，两者采用相同的完整锁定依赖。`requirements.lock` 与 `requirements.txt` 固定数值计算和模型分析的完整依赖版本。应用运行、测试及资料均在本地，不请求外部 API；构建时预装依赖，正式运行不安装或下载资料。
 
 ```bash
 docker build -t rhythm-observatory:local .
@@ -21,6 +21,7 @@ docker run --rm --network none rhythm-observatory:local python -m unittest disco
 ```bash
 python -m compileall -q rhythm_observatory tests tools
 python -m unittest discover -s tests -v
+python -m build --wheel --no-isolation
 python tools/demo.py
 ```
 
