@@ -4,7 +4,7 @@ rhythm-observatory 是 Python 业务分析应用，目前提供原始资料核�
 
 ## 目录和边界
 
-`rhythm_observatory/data.py` 读取资料并冻结公开日期可见的版本。`product.py` 实现当前领域摘要，`workflow.py` 串联资料读取与成果发布，`service.py` 提供本地 HTTP 资料和消费接口，`store.py` 保存不可变成果和当前消费约束，`client.py` 是调用适配层。服务接口见 `docs/protocol.md`，具体资料含义见 `docs/data-contract.md`。`tests` 覆盖已有业务口径与联调，不代表新增方法已经实现。
+`rhythm_observatory/data.py` 读取资料并冻结公开日期可见的版本。`product.py` 实现当前领域摘要，`rhythm.py` 实现不规则观测的周期与跨平台同步分析（方法 `rhythm-sync-v1`，见 `docs/rhythm-method.md`），`workflow.py` 串联资料读取与成果发布，`service.py` 提供本地 HTTP 资料和消费接口，`store.py` 保存不可变成果和当前消费约束，`client.py` 是调用适配层。服务接口见 `docs/protocol.md`，具体资料含义见 `docs/data-contract.md`。`tests` 覆盖已有业务口径、联调与新方法的合成对照试验。
 
 ## 环境和依赖
 
@@ -33,4 +33,4 @@ python tools/demo.py
 python -m rhythm_observatory.service --port 8765
 ```
 
-默认服务地址为 `127.0.0.1:8765`，本地成果保存在 `local-state.sqlite3`。启动后资料只读；本地消费约束可通过管理接口变更，不会修改已发布成果。中断运行可正常退出。已有概览使用 `observed-overview-v1` 标明方法版本，额外分析可使用自己的方法和结果结构，不能复用旧方法名掩盖语义变化。
+默认服务地址为 `127.0.0.1:8765`，本地成果保存在 `local-state.sqlite3`。启动后资料只读；本地消费约束可通过管理接口变更，不会修改已发布成果。中断运行可正常退出。已有概览使用 `observed-overview-v1` 标明方法版本，周期与同步分析使用 `rhythm-sync-v1`；额外分析可使用自己的方法和结果结构，不能复用旧方法名掩盖语义变化。

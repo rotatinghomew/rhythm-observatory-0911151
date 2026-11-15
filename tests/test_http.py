@@ -7,7 +7,7 @@ from rhythm_observatory.client import ProductClient, RemoteError
 from rhythm_observatory.data import load_bundle
 from rhythm_observatory.service import running_service
 from rhythm_observatory.store import ArtifactStore
-from rhythm_observatory.workflow import publish_overview
+from rhythm_observatory.workflow import publish_overview, publish_rhythm
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +41,23 @@ class IntegrationTests(unittest.TestCase):
     def test_overview_roundtrip(self):
         value = publish_overview(self.client, "2026-01-01", "http-overview")
         self.assertEqual(self.client.artifact(value["artifact_id"]), value["artifact"])
+
+    def test_rhythm_roundtrip_keeps_method_and_sources(self):
+        value = publish_rhythm(self.client, "2026-01-01", "http-rhythm")
+        artifact = value["artifact"]
+        self.assertEqual(artifact["method"], "rhythm-sync-v1")
+        restored = self.client.artifact(value["artifact_id"])
+        self.assertEqual(restored, artifact)
+        platforms = artifact["result"]["platforms"]
+        self.assertTrue(platforms)
+        self.assertTrue(all(platform["supporting_records"] for platform in platforms))
+        first_record = platforms[0]["supporting_records"][0]
+        self.assertIn("source_readings", first_record)
+        self.assertIn("clock_records", first_record)
+        guidance = artifact["result"]["scheduling_guidance"]
+        self.assertTrue(all(item["guidance"] != "synchronized_schedule_supported"
+                            or item["synchronization_status"] == "phase_consistent"
+                            for item in guidance))
 
     def test_exact_request_replay(self):
         artifact = self.artifact()
